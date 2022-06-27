@@ -12,16 +12,23 @@ public class CameraController : MonoBehaviour
     private GameObject playerReferance;
     [SerializeField]
     private float camSpeed = 5.0f;
+    [SerializeField]
+    private float camHeight = 15.0f;
+    [SerializeField, Range(0f, 1.0f)]
+    public float slerper = 0.5f;
 
     private void Start()
     {
-        targetHeight = cameraReferance.transform.position.y;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 targetPos = new Vector3(playerReferance.transform.position.x, targetHeight, playerReferance.transform.position.z);
-        cameraReferance.transform.position = Vector3.Slerp(cameraReferance.transform.position, targetPos, 0.59f*Time.deltaTime * camSpeed);
+
+        Vector3 targetPos = new(
+            playerReferance.transform.position.x,
+            playerReferance.transform.position.y + camHeight,
+            playerReferance.transform.position.z);
+        cameraReferance.transform.position = Vector3.Lerp(cameraReferance.transform.position, targetPos, slerper * Time.deltaTime * camSpeed);
     }
 }

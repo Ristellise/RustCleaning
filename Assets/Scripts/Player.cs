@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     [Header("Calculations")]
     public Vector2 moveInput = new Vector2();
     private Vector2 desiredVelocity;
-    public Vector2 velocity;
+    public Vector3 velocity;
     private float maxSpeedChange;
     private float acceleration;
     private float deceleration;
@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
 
         //Calculate's the character's desired velocity - which is the direction you are facing, multiplied by the character's maximum speed
         //Friction is not used in this game
-        desiredVelocity = new Vector2(directionX, 0f) * Mathf.Max(maxSpeed - friction, 0f);
+        desiredVelocity = new Vector2(moveInput.x, moveInput.y) * Mathf.Max(maxSpeed - friction, maxSpeed - friction);
 
     }
 
@@ -102,7 +102,7 @@ public class Player : MonoBehaviour
         if (pressingKey)
         {
             //If the sign (i.e. positive or negative) of our input direction doesn't match our movement, it means we're turning around and so should use the turn speed stat.
-            if (Mathf.Sign(directionX) != Mathf.Sign(velocity.x))
+            if (Mathf.Sign(moveInput.x) != Mathf.Sign(velocity.x) || Mathf.Sign(moveInput.y) != Mathf.Sign(velocity.y))
             {
                 maxSpeedChange = turnSpeed * Time.deltaTime;
             }
@@ -120,6 +120,7 @@ public class Player : MonoBehaviour
 
         //Move our velocity towards the desired velocity, at the rate of the number calculated above
         velocity.x = Mathf.MoveTowards(velocity.x, desiredVelocity.x, maxSpeedChange);
+        velocity.z = Mathf.MoveTowards(velocity.z, desiredVelocity.y, maxSpeedChange);
 
         //Update the Rigidbody with this new velocity
         body.velocity = velocity;
@@ -130,6 +131,7 @@ public class Player : MonoBehaviour
     {
         //If we're not using acceleration and deceleration, just send our desired velocity (direction * max speed) to the Rigidbody
         velocity.x = desiredVelocity.x;
+        velocity.z = desiredVelocity.y;
 
         body.velocity = velocity;
     }
